@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NexaFlow — Dashboard</title>
+  
+  <!-- Tailwind & Charts -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="components/tailwind-config.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body class="bg-slate-50 min-h-screen text-slate-800 font-sans flex">
+
+<!-- Layout Injection Points -->
+<div id="sidebar-container"></div>
+
+<div class="flex-1 flex flex-col min-w-0 ml-0 sm:ml-64 transition-all duration-300">
+  <div id="topbar-container"></div>
+
+  <main class="flex-1 p-6 sm:p-8 max-w-7xl mx-auto w-full">
+    
+    <!-- Hero Banner -->
+    <div class="relative w-full h-48 rounded-2xl overflow-hidden mb-8 shadow-sm">
+      <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=1470&auto=format&fit=crop" alt="Dashboard Banner" class="w-full h-full object-cover" />
+      <div class="absolute inset-0 bg-gradient-to-r from-brand-navy/90 to-brand-navy/30 flex flex-col justify-center px-8">
+        <h2 class="text-3xl font-display font-bold text-white mb-2">Welcome back to NexaFlow.</h2>
+        <p class="text-brand-light/80 max-w-lg">Track your inventory, monitor expenses, and get AI-powered insights to scale your business.</p>
+      </div>
+    </div>
+    
+    <!-- Page Header & Actions -->
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
+      <div>
+        <h2 class="text-2xl font-display font-bold text-slate-900 tracking-tight">Overview</h2>
+        <p class="text-sm text-slate-500 mt-1">Here's what's happening with your business today.</p>
+      </div>
+      <div class="flex items-center gap-3">
+        <!-- Actions moved to respective tabs -->
+      </div>
+    </div>
+
+    <!-- Summary Cards Grid -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8" id="statsGrid">
+      <!-- Generated via JS -->
+      <div class="bg-white rounded-2xl p-6 shadow-soft border border-slate-100 flex flex-col justify-center h-32"><div class="skeleton-box w-full"></div></div>
+      <div class="bg-white rounded-2xl p-6 shadow-soft border border-slate-100 flex flex-col justify-center h-32"><div class="skeleton-box w-full"></div></div>
+      <div class="bg-white rounded-2xl p-6 shadow-soft border border-slate-100 flex flex-col justify-center h-32"><div class="skeleton-box w-full"></div></div>
+      <div class="bg-white rounded-2xl p-6 shadow-soft border border-slate-100 flex flex-col justify-center h-32"><div class="skeleton-box w-full"></div></div>
+    </div>
+
+    <!-- Main Content Area -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      
+      <!-- Charts Column -->
+      <div class="lg:col-span-2 space-y-8">
+        
+        <!-- Cash Flow Chart Card -->
+        <div class="bg-white rounded-2xl shadow-card border border-slate-100 p-6 transition-all hover:shadow-hover">
+          <div class="flex items-center justify-between mb-6">
+            <h3 class="text-base font-semibold text-slate-800">Cash Flow (Income vs Expenses)</h3>
+          </div>
+          <div class="relative h-72 w-full">
+            <canvas id="incomeExpenseChart"></canvas>
+            <div id="chartSkeleton1" class="absolute inset-0 bg-slate-50 rounded-xl flex items-center justify-center">
+              <svg class="animate-spin h-8 w-8 text-primary-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+            </div>
+          </div>
+        </div>
+
+        <!-- Inventory Chart Card -->
+        <div class="bg-white rounded-2xl shadow-card border border-slate-100 p-6 transition-all hover:shadow-hover">
+          <div class="flex items-center justify-between mb-6">
+            <h3 class="text-base font-semibold text-slate-800">Low Stock Inventory (Top 10)</h3>
+            <a href="inventory.html" class="text-sm font-medium text-primary-600 hover:text-primary-700">View all &rarr;</a>
+          </div>
+          <div class="relative h-64 w-full">
+            <canvas id="inventoryChart"></canvas>
+            <div id="chartSkeleton2" class="absolute inset-0 bg-slate-50 rounded-xl flex items-center justify-center">
+              <svg class="animate-spin h-8 w-8 text-primary-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Right Column: AI Assistant & Analytics -->
+      <div class="space-y-6">
+
+        <!-- Analytics Cards Row -->
+        <div class="bg-white rounded-2xl shadow-card border border-slate-100 p-6 transition-all hover:shadow-hover">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="text-base font-semibold text-slate-800 flex items-center gap-2">
+              <span class="text-xl">📈</span> Forecast
+            </h3>
+            <a href="inventory.html" class="text-sm font-medium text-primary-600 hover:text-primary-700">Manage &rarr;</a>
+          </div>
+          <div id="analyticsCards" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-4 max-h-[300px] overflow-y-auto custom-scrollbar pr-2">
+            <div class="skeleton-box h-24 rounded-xl"></div>
+            <div class="skeleton-box h-24 rounded-xl"></div>
+            <div class="skeleton-box h-24 rounded-xl"></div>
+          </div>
+        </div>
+        <!-- AI Copilot Chat Card -->
+        <div class="bg-gradient-to-br from-brand-navy to-slate-900 rounded-2xl shadow-card flex flex-col h-[400px] overflow-hidden relative group">
+          <div class="absolute top-0 right-0 w-48 h-48 bg-brand-blue rounded-full mix-blend-screen filter blur-[60px] opacity-40 group-hover:opacity-60 transition-opacity pointer-events-none"></div>
+          
+          <div class="p-5 border-b border-white/10 flex items-center gap-3 relative z-10">
+            <div class="w-8 h-8 rounded-xl bg-white/10 backdrop-blur-sm border border-white/20 flex items-center justify-center">
+              <svg class="w-4 h-4 text-brand-orange" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" /></svg>
+            </div>
+            <h3 class="text-sm font-semibold text-white flex-1">AI Financial Copilot</h3>
+          </div>
+
+          <div id="aiChatWindow" class="flex-1 p-5 overflow-y-auto space-y-4 relative z-10 custom-scrollbar flex flex-col">
+            <!-- Welcome message -->
+            <div class="flex gap-3">
+              <div class="w-8 h-8 rounded-full bg-brand-blue/20 flex items-center justify-center flex-shrink-0">
+                <svg class="w-4 h-4 text-brand-blue" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
+              </div>
+              <div class="bg-white/10 backdrop-blur-md border border-white/10 rounded-2xl rounded-tl-sm p-3 max-w-[85%]">
+                <p class="text-xs text-white/90 leading-relaxed">Hi! I'm your NexaFlow AI Copilot. Ask me anything about your finances or inventory.</p>
+              </div>
+            </div>
+          </div>
+          
+          <div class="p-4 border-t border-white/10 relative z-10 bg-slate-900/50">
+            <form id="aiChatForm" class="flex gap-2">
+              <input type="text" id="aiChatInput" placeholder="Ask a question..." class="flex-1 bg-white/5 border border-white/10 rounded-lg px-4 py-2 text-sm text-white placeholder-white/40 focus:outline-none focus:ring-1 focus:ring-brand-blue transition-all" />
+              <button type="submit" id="aiChatSubmit" class="bg-brand-blue hover:bg-brand-blue/90 text-white rounded-lg px-3 flex items-center justify-center transition-colors">
+                <svg class="w-4 h-4 transform rotate-90" fill="currentColor" viewBox="0 0 20 20"><path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z" /></svg>
+              </button>
+            </form>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </main>
+</div>
+
+<!-- Scripts -->
+<script src="app.js?v=6"></script>
+<script src="components/layout.js?v=5"></script>
+<script src="components/charts.js?v=5"></script>
+<script>
+  window.showToast = function(m, t) {};
+
+  enforceRoleAccess(['user']);
+  
+  // Initialize layout components
+  initLayout('dashboard', 'Dashboard Overview');
+
+  function renderStatCard(title, value, type, trendVal) {
+    const isPositive = trendVal >= 0;
+    const trendColor = isPositive ? 'text-green-600 bg-green-50' : 'text-red-600 bg-red-50';
+    const trendIcon = isPositive 
+      ? `<svg class="w-3 h-3 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18" /></svg>`
+      : `<svg class="w-3 h-3 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3" /></svg>`;
+    
+    // Dynamic trend badge (static display logic for now based on value)
+    const trendHtml = trendVal !== null 
+      ? `<div class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${trendColor}">${trendIcon}${Math.abs(trendVal)}%</div>`
+      : '';
+
+    let iconSvg = '';
+    let iconBg = '';
+    let iconColor = '';
+
+    if (type === 'income') {
+      iconBg = 'bg-green-50'; iconColor = 'text-green-600';
+      iconSvg = `<svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>`;
+    } else if (type === 'expense') {
+      iconBg = 'bg-red-50'; iconColor = 'text-red-600';
+      iconSvg = `<svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 17h8m0 0V9m0 8l-8-8-4 4-6-6" /></svg>`;
+    } else if (type === 'profit') {
+      iconBg = 'bg-primary-50'; iconColor = 'text-primary-600';
+      iconSvg = `<svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" /></svg>`;
+    } else {
+      iconBg = 'bg-slate-100'; iconColor = 'text-slate-600';
+      iconSvg = `<svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" /></svg>`;
+    }
+
+    return `
+      <div class="bg-white rounded-2xl p-6 shadow-soft border border-slate-100 hover:shadow-card transition-shadow flex flex-col">
+        <div class="flex items-center justify-between mb-4">
+          <div class="w-10 h-10 rounded-xl ${iconBg} ${iconColor} flex items-center justify-center shadow-sm">
+            ${iconSvg}
+          </div>
+          ${trendHtml}
+        </div>
+        <h3 class="text-sm font-medium text-slate-500 mb-1">${title}</h3>
+        <p class="text-2xl font-display font-bold text-slate-900">${value}</p>
+      </div>
+    `;
+  }
+
+  function renderInsightCard(insight) {
+    const typeStyles = {
+      low_stock: { bg: 'bg-white/10 border-white/10', icon: 'text-brand-orange', text: 'text-white', action: 'Restock Now', url: 'inventory.html' },
+      high_expense: { bg: 'bg-white/10 border-white/10', icon: 'text-red-400', text: 'text-white', action: 'Review Expenses', url: 'finance.html' },
+      low_selling: { bg: 'bg-white/10 border-white/10', icon: 'text-brand-blue', text: 'text-white', action: 'View Products', url: 'inventory.html' },
+      ok: { bg: 'bg-white/10 border-white/10', icon: 'text-green-400', text: 'text-white', action: 'View Details', url: 'finance.html' }
+    };
+    
+    const style = typeStyles[insight.type] || typeStyles.ok;
+    
+    return `
+      <div class="rounded-xl border ${style.bg} backdrop-blur-sm p-4 transition-all hover:bg-white/20 cursor-pointer">
+        <div class="flex items-start gap-3">
+          <div class="mt-0.5 ${style.icon}">
+            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" /></svg>
+          </div>
+          <div class="flex-1">
+            <p class="text-sm font-medium ${style.text} leading-snug">${insight.message.replace(/^(⚠️|🔴|📉|✅)\s*/, '')}</p>
+            <a href="${style.url}" class="inline-block mt-3 text-sm font-semibold text-brand-blue hover:text-white transition-colors">
+              ${style.action} &rarr;
+            </a>
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  async function loadDashboard() {
+    try {
+      const [products, transactions, recs] = await Promise.all([
+        apiFetch(`${INVENTORY_URL}/products`, { headers: authHeaders() }),
+        apiFetch(`${FINANCE_URL}/transactions`, { headers: authHeaders() }),
+        apiFetch(`${INVOICE_URL}/recommendations`, { headers: authHeaders() })
+      ]);
+
+      // Calculate stats
+      const income   = transactions.filter(t => t.type === 'income').reduce((s, t) => s + t.amount, 0);
+      const expenses = transactions.filter(t => t.type === 'expense').reduce((s, t) => s + t.amount, 0);
+      const net = income - expenses;
+      const lowStockCount = products.filter(p => p.stock < 10).length;
+
+      // Render Cards
+      document.getElementById('statsGrid').innerHTML = 
+        renderStatCard('Total Revenue', fmtMoney(income), 'income', 12.5) +
+        renderStatCard('Total Expenses', fmtMoney(expenses), 'expense', -4.2) +
+        renderStatCard('Net Profit', fmtMoney(net), 'profit', 8.1) +
+        renderStatCard('Low Stock Items', lowStockCount, 'inventory', null);
+
+      // Render Charts
+      document.getElementById('chartSkeleton1').style.display = 'none';
+      document.getElementById('chartSkeleton2').style.display = 'none';
+      renderIncomeExpenseChart('incomeExpenseChart', transactions);
+      renderInventoryChart('inventoryChart', products);
+
+      // Load Predictive Analytics - works with or without analytics_service
+      try {
+        const inventory = products || [];
+        const analyticsGrid = document.getElementById('analyticsCards');
+        
+        if (inventory.length === 0) {
+          analyticsGrid.innerHTML = `<p class="text-sm text-slate-400 col-span-3 text-center py-4">Add products to see forecasts.</p>`;
+          document.getElementById('predictiveAlertText').textContent = 'No products found. Add inventory to see stock forecasts.';
+        } else {
+          const sorted = [...inventory].sort((a, b) => a.stock - b.stock).slice(0, 6);
+          
+          const cards = await Promise.all(sorted.map(async (p) => {
+            let daysLeft = p.stock; // fallback
+            let dailyRate = 1;
+            try {
+              const f = await apiFetch(`${ANALYTICS_URL}/forecast/${p.id}`, { headers: authHeaders() });
+              if (f) { daysLeft = f.days_left; dailyRate = f.daily_sales_rate; }
+            } catch (_) {}
+
+            const urgency = daysLeft < 7 ? 'border-red-200 bg-red-50/50' :
+                            daysLeft < 14 ? 'border-amber-200 bg-amber-50/50' :
+                            'border-slate-100 bg-white shadow-sm';
+            const dotColor = daysLeft < 7 ? 'bg-red-500' :
+                             daysLeft < 14 ? 'bg-amber-400' : 'bg-green-400';
+            const dayTextColor = daysLeft < 7 ? 'text-red-600' :
+                                 daysLeft < 14 ? 'text-amber-600' : 'text-green-600';
+            const barColor = daysLeft < 7 ? 'bg-red-500' :
+                             daysLeft < 14 ? 'bg-amber-400' : 'bg-green-500';
+
+            // Calculate estimated depletion date
+            const emptyDate = new Date();
+            emptyDate.setDate(emptyDate.getDate() + daysLeft);
+            const dateStr = emptyDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+            
+            // Health percentage (cap at 30 days)
+            const healthPct = Math.min(100, Math.max(0, (daysLeft / 30) * 100));
+
+            return `
+              <div class="border ${urgency} rounded-xl p-4 transition-all hover:shadow-md">
+                <div class="flex items-center justify-between mb-3">
+                  <div class="flex items-center gap-2 overflow-hidden pr-2">
+                    <span class="w-2.5 h-2.5 rounded-full ${dotColor} flex-shrink-0 animate-pulse"></span>
+                    <span class="text-sm font-semibold text-slate-800 truncate">${p.name}</span>
+                  </div>
+                  <div class="text-xs font-bold ${dayTextColor} whitespace-nowrap bg-white/50 px-2 py-0.5 rounded-md border border-slate-100">
+                    ~${daysLeft} days
+                  </div>
+                </div>
+                
+                <div class="grid grid-cols-2 gap-2 mb-3">
+                  <div class="bg-slate-50/80 rounded-lg p-2 border border-slate-100">
+                    <div class="text-[10px] text-slate-400 font-medium uppercase tracking-wider mb-0.5">Current Stock</div>
+                    <div class="text-xs font-bold text-slate-700">${p.stock} <span class="text-[10px] font-normal text-slate-500">units</span></div>
+                  </div>
+                  <div class="bg-slate-50/80 rounded-lg p-2 border border-slate-100">
+                    <div class="text-[10px] text-slate-400 font-medium uppercase tracking-wider mb-0.5">Sales Velocity</div>
+                    <div class="text-xs font-bold text-slate-700">${dailyRate} <span class="text-[10px] font-normal text-slate-500">/day</span></div>
+                  </div>
+                </div>
+
+                <div class="space-y-1.5">
+                  <div class="flex justify-between items-center text-[10px]">
+                    <span class="text-slate-500">Stock Health</span>
+                    <span class="font-medium text-slate-700">Runs out: ${dateStr}</span>
+                  </div>
+                  <div class="w-full bg-slate-200 rounded-full h-1.5 overflow-hidden">
+                    <div class="${barColor} h-1.5 rounded-full transition-all duration-1000" style="width: ${healthPct}%"></div>
+                  </div>
+                </div>
+              </div>`;
+          }));
+          
+          analyticsGrid.innerHTML = cards.join('');
+        }
+      } catch (e) {
+        console.log('Analytics load error', e);
+        document.getElementById('analyticsCards').innerHTML = `<p class="text-sm text-slate-400 col-span-3 text-center py-4">Analytics unavailable.</p>`;
+      }
+
+    } catch (err) {
+      console.error(err);
+      showToast('Failed to load dashboard data. ' + err.message, 'error');
+    }
+  }
+
+  async function handleAiChat(event) {
+    event.preventDefault();
+    const inputEl = document.getElementById('aiChatInput');
+    const query = inputEl.value.trim();
+    if (!query) return;
+
+    const chatWindow = document.getElementById('aiChatWindow');
+    
+    // Append user message
+    chatWindow.innerHTML += `
+      <div class="flex gap-3 flex-row-reverse">
+        <div class="w-8 h-8 rounded-full bg-primary-600 flex items-center justify-center flex-shrink-0">
+          <svg class="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
+        </div>
+        <div class="bg-brand-blue text-white rounded-2xl rounded-tr-sm p-3 max-w-[85%]">
+          <p class="text-xs leading-relaxed">${query.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</p>
+        </div>
+      </div>
+    `;
+    
+    inputEl.value = '';
+    chatWindow.scrollTop = chatWindow.scrollHeight;
+
+    // Show loading
+    const loadingId = 'loading-' + Date.now();
+    chatWindow.innerHTML += `
+      <div id="${loadingId}" class="flex gap-3">
+        <div class="w-8 h-8 rounded-full bg-brand-blue/20 flex items-center justify-center flex-shrink-0">
+          <svg class="w-4 h-4 text-brand-blue animate-spin" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>
+        </div>
+        <div class="bg-white/10 backdrop-blur-md border border-white/10 rounded-2xl rounded-tl-sm p-3">
+          <p class="text-xs text-white/70 italic">Thinking...</p>
+        </div>
+      </div>
+    `;
+    chatWindow.scrollTop = chatWindow.scrollHeight;
+
+    try {
+      const data = await apiFetch(`${AI_URL}/query`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ query: query })
+      });
+      
+      const loadEl = document.getElementById(loadingId);
+      if (loadEl) loadEl.remove();
+      
+      if (data && data.response) {
+        // Append AI response
+        chatWindow.innerHTML += `
+          <div class="flex gap-3">
+            <div class="w-8 h-8 rounded-full bg-brand-blue/20 flex items-center justify-center flex-shrink-0">
+              <svg class="w-4 h-4 text-brand-blue" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
+            </div>
+            <div class="bg-white/10 backdrop-blur-md border border-white/10 rounded-2xl rounded-tl-sm p-3 max-w-[85%]">
+              <p class="text-xs text-white/90 leading-relaxed whitespace-pre-wrap">${data.response.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</p>
+            </div>
+          </div>
+        `;
+      }
+    } catch (err) {
+      const loadEl = document.getElementById(loadingId);
+      if (loadEl) loadEl.remove();
+      console.error(err);
+      
+      let errorMsg = err.message || "Error connecting to AI service.";
+      
+      chatWindow.innerHTML += `
+        <div class="flex gap-3">
+          <div class="w-8 h-8 rounded-full bg-red-500/20 flex items-center justify-center flex-shrink-0">
+            <svg class="w-4 h-4 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+          </div>
+          <div class="bg-red-500/10 border border-red-500/20 rounded-2xl rounded-tl-sm p-3 max-w-[85%]">
+            <p class="text-xs text-red-400 leading-relaxed"><strong>AI Error:</strong> ${errorMsg}</p>
+          </div>
+        </div>
+      `;
+    }
+    chatWindow.scrollTop = chatWindow.scrollHeight;
+  }
+
+  loadDashboard();
+  
+  // Attach event listener to ensure form submission is always intercepted
+  const chatForm = document.getElementById('aiChatForm');
+  if (chatForm) {
+    chatForm.addEventListener('submit', handleAiChat);
+  }
+</script>
+</body>
+</html>

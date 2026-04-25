@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NexaFlow — Secure Login</title>
+  
+  <!-- Tailwind CSS & Config -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="components/tailwind-config.js"></script>
+  
+  <!-- Custom Base CSS -->
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body class="bg-slate-50 min-h-screen text-slate-800 font-sans flex items-center justify-center p-4">
+
+<div class="bg-white rounded-[2rem] shadow-card w-full max-w-6xl flex overflow-hidden min-h-[600px] border border-slate-100 relative z-10">
+  
+  <!-- Left Side: Branding & Image -->
+  <div class="hidden lg:flex flex-col justify-between w-1/2 p-12 relative overflow-hidden">
+    <!-- Unsplash Image Background with Overlay -->
+    <div class="absolute inset-0 bg-brand-navy z-0">
+      <img id="carouselBg" src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=1470&auto=format&fit=crop" alt="Data Analytics" class="w-full h-full object-cover opacity-40 mix-blend-overlay transition-opacity duration-500" />
+      <div class="absolute inset-0 bg-gradient-to-t from-brand-navy via-brand-navy/60 to-transparent"></div>
+    </div>
+    
+    <div class="relative z-10">
+      <div class="flex items-center gap-3 mb-12">
+        <div class="w-10 h-10 rounded-xl bg-brand-blue flex items-center justify-center shadow-lg">
+          <svg class="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+        </div>
+        <span class="text-2xl font-display font-bold text-white tracking-tight">NexaFlow<span class="text-brand-orange">.</span></span>
+      </div>
+      <div class="mt-20">
+        <h2 id="carouselTitle" class="text-4xl font-display font-bold text-white mb-6 leading-tight transition-opacity duration-500">Intelligent financial operations.</h2>
+        <p id="carouselDesc" class="text-slate-300 text-lg max-w-md font-light leading-relaxed transition-opacity duration-500">Streamline your workflows, monitor cash flow in real-time, and make data-driven decisions with confidence.</p>
+      </div>
+    </div>
+    
+    <div class="relative z-10 mt-auto">
+      <div id="carouselDots" class="flex gap-2">
+        <!-- Dots injected by JS -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Right Side: Login Form -->
+  <div class="w-full lg:w-1/2 flex items-center justify-center p-8 sm:p-12 lg:p-24 bg-white">
+    <div class="w-full max-w-sm">
+      
+      <!-- Mobile Logo -->
+      <div class="lg:hidden flex items-center gap-3 mb-8">
+        <div class="w-10 h-10 bg-primary-600 rounded-xl flex items-center justify-center shadow-soft">
+          <svg class="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+          </svg>
+        </div>
+        <span class="text-2xl font-display font-bold tracking-tight">Finventory.</span>
+      </div>
+
+      <div class="mb-10">
+        <h2 id="formTitle" class="text-3xl font-display font-bold text-slate-900 tracking-tight mb-2">Welcome back</h2>
+        <p id="formSubtitle" class="text-slate-500">Please enter your details to sign in.</p>
+      </div>
+      
+      <!-- Login Section -->
+      <div id="loginSection" class="space-y-5">
+        <div>
+          <label class="block text-sm font-medium text-slate-700 mb-1.5" for="loginUserType">Select User Type:</label>
+          <select id="loginUserType" onchange="switchLoginTab(this.value)" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 transition-all text-slate-700">
+            <option value="company">Company</option>
+            <option value="admin">Admin</option>
+          </select>
+        </div>
+        
+        <div>
+          <label id="loginUsernameLabel" class="block text-sm font-medium text-slate-700 mb-1.5" for="loginUsername">Company Name</label>
+          <input type="text" id="loginUsername" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 transition-all placeholder-slate-400" placeholder="Enter your company name" />
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-slate-700 mb-1.5" for="loginPassword">Password</label>
+          <input type="password" id="loginPassword" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 transition-all placeholder-slate-400" placeholder="••••••••" />
+        </div>
+        
+        <div id="loginError" class="text-red-500 text-sm font-medium min-h-[1.25rem]"></div>
+        
+        <button onclick="doLogin()" class="w-full py-3 px-4 bg-primary-600 hover:bg-primary-700 text-white font-medium rounded-xl shadow-soft shadow-primary-500/30 transition-all hover:shadow-primary-500/40 active:scale-[0.98] flex items-center justify-center login-btn">
+          Sign In
+        </button>
+        
+        <div id="signupLinkContainer" class="text-center text-sm text-slate-500 mt-6">
+          <p>Don't have an account? <a onclick="toggleForms()" class="font-semibold text-primary-600 hover:text-primary-700 cursor-pointer transition-colors">Sign up</a></p>
+        </div>
+      </div>
+
+      <!-- Signup Section -->
+      <div id="signupSection" class="space-y-5 hidden">
+        <div>
+          <label class="block text-sm font-medium text-slate-700 mb-1.5" for="signupUsername">Company Name</label>
+          <input type="text" id="signupUsername" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 transition-all placeholder-slate-400" placeholder="Choose a company name" />
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-slate-700 mb-1.5" for="signupEmail">Work Email</label>
+          <input type="email" id="signupEmail" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 transition-all placeholder-slate-400" placeholder="name@company.com" />
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-slate-700 mb-1.5" for="signupPassword">Password</label>
+          <input type="password" id="signupPassword" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 transition-all placeholder-slate-400" placeholder="Create a strong password" />
+        </div>
+        <input type="hidden" id="signupRole" value="user" />
+
+        <div id="signupError" class="text-sm font-medium min-h-[1.25rem]"></div>
+        
+        <button onclick="doSignup()" class="w-full py-3 px-4 bg-primary-600 hover:bg-primary-700 text-white font-medium rounded-xl shadow-soft shadow-primary-500/30 transition-all hover:shadow-primary-500/40 active:scale-[0.98] flex items-center justify-center login-btn mt-2">
+          Create Account
+        </button>
+        
+        <p class="text-center text-sm text-slate-500 mt-6">
+          Already have an account? <a onclick="toggleForms()" class="font-semibold text-primary-600 hover:text-primary-700 cursor-pointer transition-colors">Log in</a>
+        </p>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script src="app.js?v=5"></script>
+<script>
+  window.showToast = function(m, t) {};
+
+  if (getToken()) {
+    window.location.href = getRole() === 'admin' ? 'admin.html' : 'dashboard.html';
+  }
+
+  // Carousel Logic
+  const carouselData = [
+    {
+      image: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=1470&auto=format&fit=crop',
+      title: 'Intelligent financial operations.',
+      desc: 'Streamline your workflows, monitor cash flow in real-time, and make data-driven decisions with confidence.'
+    },
+    {
+      image: 'https://images.unsplash.com/photo-1542744173-8e7e53415bb0?q=80&w=1470&auto=format&fit=crop',
+      title: 'Advanced Inventory Management.',
+      desc: 'Keep track of your stock across multiple locations, predict demand, and never run out of your best-selling products.'
+    },
+    {
+      image: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=1470&auto=format&fit=crop',
+      title: 'Seamless Invoicing & Billing.',
+      desc: 'Generate professional PDF invoices instantly, track payments, and manage your receivables all in one place.'
+    }
+  ];
+
+  let currentSlide = 0;
+  function setSlide(index) {
+    currentSlide = index;
+    const data = carouselData[index];
+    
+    const titleEl = document.getElementById('carouselTitle');
+    const descEl = document.getElementById('carouselDesc');
+    const bgEl = document.getElementById('carouselBg');
+    
+    // Fade out
+    titleEl.classList.add('opacity-0');
+    descEl.classList.add('opacity-0');
+    bgEl.classList.replace('opacity-40', 'opacity-0');
+    
+    setTimeout(() => {
+      titleEl.textContent = data.title;
+      descEl.textContent = data.desc;
+      bgEl.src = data.image;
+      
+      // Fade in
+      titleEl.classList.remove('opacity-0');
+      descEl.classList.remove('opacity-0');
+      bgEl.classList.replace('opacity-0', 'opacity-40');
+    }, 500);
+
+    // Update dots
+    const dotsContainer = document.getElementById('carouselDots');
+    dotsContainer.innerHTML = carouselData.map((_, i) => `
+      <div onclick="setSlide(${i})" class="w-2 h-2 rounded-full cursor-pointer transition-colors ${i === index ? 'bg-brand-orange' : 'bg-white/30 hover:bg-white/50'}"></div>
+    `).join('');
+  }
+
+  setInterval(() => {
+    setSlide((currentSlide + 1) % carouselData.length);
+  }, 2000);
+
+  document.addEventListener('DOMContentLoaded', () => {
+    setSlide(0);
+  });
+
+
+
+  function switchLoginTab(type) {
+    const userLabel = document.getElementById('loginUsernameLabel');
+    const signupLink = document.getElementById('signupLinkContainer');
+    
+    if (type === 'company' || type === 'user') {
+      userLabel.textContent = "Company Name";
+      document.getElementById('loginUsername').placeholder = "Enter your company name";
+      signupLink.classList.remove('hidden');
+    } else {
+      userLabel.textContent = "Admin Username";
+      document.getElementById('loginUsername').placeholder = "Enter admin username";
+      signupLink.classList.add('hidden');
+    }
+  }
+
+  function toggleForms() {
+    const login = document.getElementById('loginSection');
+    const signup = document.getElementById('signupSection');
+    const title = document.getElementById('formTitle');
+    const subtitle = document.getElementById('formSubtitle');
+    
+    if (login.classList.contains('hidden')) {
+      login.classList.remove('hidden');
+      signup.classList.add('hidden');
+      title.textContent = 'Welcome back';
+      subtitle.textContent = 'Please enter your details to sign in.';
+    } else {
+      login.classList.add('hidden');
+      signup.classList.remove('hidden');
+      title.textContent = 'Create an account';
+      subtitle.textContent = 'Join Finventory and manage your business.';
+    }
+  }
+
+  function setLoading(btnSelector, isLoading) {
+    const btn = document.querySelector(btnSelector);
+    if (isLoading) {
+      btn.dataset.original = btn.innerHTML;
+      btn.innerHTML = `<svg class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>`;
+      btn.disabled = true;
+      btn.classList.add('opacity-80', 'cursor-not-allowed');
+    } else {
+      btn.innerHTML = btn.dataset.original;
+      btn.disabled = false;
+      btn.classList.remove('opacity-80', 'cursor-not-allowed');
+    }
+  }
+
+  async function doLogin() {
+    const username = document.getElementById('loginUsername').value.trim();
+    const password = document.getElementById('loginPassword').value;
+    const errEl = document.getElementById('loginError');
+    errEl.textContent = '';
+    
+    if (!username || !password) { errEl.textContent = 'Please fill in all fields.'; return; }
+    
+    setLoading('#loginSection .login-btn', true);
+
+    try {
+      const data = await apiFetch(`${AUTH_URL}/auth/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, password }),
+      });
+      if (!data) return;
+      localStorage.setItem('token', data.access_token);
+      localStorage.setItem('role', data.role);
+      localStorage.setItem('username', data.username);
+      localStorage.setItem('nexaflow_username', data.username);
+      localStorage.setItem('nexaflow_email', data.email || '');
+      
+      showToast('Login successful!', 'success');
+      setTimeout(() => {
+        window.location.href = data.role === 'admin' ? 'admin.html' : 'dashboard.html';
+      }, 500);
+    } catch (err) {
+      errEl.textContent = err.message;
+      setLoading('#loginSection .login-btn', false);
+    }
+  }
+
+  async function doSignup() {
+    const username = document.getElementById('signupUsername').value.trim();
+    const email    = document.getElementById('signupEmail').value.trim();
+    const password = document.getElementById('signupPassword').value;
+    const role     = document.getElementById('signupRole').value;
+    const errEl    = document.getElementById('signupError');
+    errEl.textContent = '';
+    
+    if (!username || !email || !password) { 
+      errEl.textContent = 'Please fill in all fields.'; 
+      errEl.className = "text-sm font-medium min-h-[1.25rem] text-red-500";
+      return; 
+    }
+    
+    setLoading('#signupSection .login-btn', true);
+
+    try {
+      await apiFetch(`${AUTH_URL}/auth/signup`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, email, password, role }),
+      });
+      
+      errEl.className = "text-sm font-medium min-h-[1.25rem] text-green-500";
+      errEl.textContent = 'Account created successfully!';
+      showToast('Account created!', 'success');
+      
+      setTimeout(() => {
+        errEl.textContent = '';
+        setLoading('#signupSection .login-btn', false);
+        toggleForms();
+        document.getElementById('loginUsername').value = username;
+      }, 1500);
+    } catch (err) {
+      errEl.className = "text-sm font-medium min-h-[1.25rem] text-red-500";
+      errEl.textContent = err.message;
+      setLoading('#signupSection .login-btn', false);
+    }
+  }
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Enter') {
+      if (!document.getElementById('loginSection').classList.contains('hidden')) doLogin();
+      else doSignup();
+    }
+  });
+</script>
+</body>
+</html>
