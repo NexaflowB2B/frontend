@@ -61,8 +61,8 @@
 
 <script src="app.js?v=6"></script>
 <script src="components/layout.js?v=5"></script>
-<script>
-  window.showToast = function(m, t) {};
+<script type="module">
+  globalThis.showToast = function(m, t) {};
 
   enforceRoleAccess(['admin']);
   initLayout('admin', 'Admin Console');
@@ -120,13 +120,13 @@
         throw new Error(err.detail || 'Failed to toggle block status');
       }
       showToast('User status updated successfully', 'success');
-      loadUsers();
+      await loadUsers();
     } catch (err) {
       alert(err.message);
     }
   }
 
-  loadUsers();
+  await loadUsers();
 </script>
 </body>
 </html>

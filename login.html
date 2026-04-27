@@ -89,7 +89,7 @@
         </button>
         
         <div id="signupLinkContainer" class="text-center text-sm text-slate-500 mt-6">
-          <p>Don't have an account? <a onclick="toggleForms()" class="font-semibold text-primary-600 hover:text-primary-700 cursor-pointer transition-colors">Sign up</a></p>
+          <p>Don't have an account? <button type="button" onclick="toggleForms()" class="font-semibold text-primary-600 hover:text-primary-700 cursor-pointer transition-colors">Sign up</button></p>
         </div>
       </div>
 
@@ -116,7 +116,7 @@
         </button>
         
         <p class="text-center text-sm text-slate-500 mt-6">
-          Already have an account? <a onclick="toggleForms()" class="font-semibold text-primary-600 hover:text-primary-700 cursor-pointer transition-colors">Log in</a>
+          Already have an account? <button type="button" onclick="toggleForms()" class="font-semibold text-primary-600 hover:text-primary-700 cursor-pointer transition-colors">Log in</button>
         </p>
       </div>
 
@@ -126,10 +126,10 @@
 
 <script src="app.js?v=5"></script>
 <script>
-  window.showToast = function(m, t) {};
+  globalThis.showToast = function(m, t) {};
 
   if (getToken()) {
-    window.location.href = getRole() === 'admin' ? 'admin.html' : 'dashboard.html';
+    globalThis.location.href = getRole() === 'admin' ? 'admin.html' : 'dashboard.html';
   }
 
   // Carousel Logic
@@ -266,7 +266,7 @@
       
       showToast('Login successful!', 'success');
       setTimeout(() => {
-        window.location.href = data.role === 'admin' ? 'admin.html' : 'dashboard.html';
+        globalThis.location.href = data.role === 'admin' ? 'admin.html' : 'dashboard.html';
       }, 500);
     } catch (err) {
       errEl.textContent = err.message;

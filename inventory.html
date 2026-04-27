@@ -130,8 +130,8 @@
 
 <script src="app.js?v=6"></script>
 <script src="components/layout.js?v=5"></script>
-<script>
-  window.showToast = function(m, t) {};
+<script type="module">
+  globalThis.showToast = function(m, t) {};
 
   enforceRoleAccess(['user']);
   initLayout('inventory', 'Inventory Management');
@@ -219,11 +219,11 @@
     
     const id    = document.getElementById('editId').value;
     const name  = document.getElementById('pName').value.trim();
-    const price = parseFloat(document.getElementById('pPrice').value);
-    const stock = parseInt(document.getElementById('pStock').value);
+    const price = Number.parseFloat(document.getElementById('pPrice').value);
+    const stock = Number.parseInt(document.getElementById('pStock').value, 10);
     const desc  = document.getElementById('pDesc').value.trim();
 
-    if (!name || isNaN(price) || isNaN(stock)) { 
+    if (!name || Number.isNaN(price) || Number.isNaN(stock)) { 
       errEl.textContent = 'Name, price, and stock are required.'; 
       errEl.classList.remove('hidden');
       return; 
@@ -286,7 +286,7 @@
     document.getElementById('formError').classList.add('hidden');
   }
 
-  loadProducts();
+  await loadProducts();
 </script>
 </body>
 </html>
