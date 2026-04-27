@@ -182,7 +182,7 @@ document.addEventListener('click', (event) => {
 globalThis.deleteAccount = async function deleteAccount() {
   if (confirm('Are you sure you want to delete your company account? This action cannot be undone.')) {
     try {
-      await apiFetch('/api/auth/auth/delete', { method: 'DELETE', headers: authHeaders() });
+      await apiFetch('/api/auth/delete', { method: 'DELETE', headers: authHeaders() });
       logout();
     } catch (error_) {
       alert(`Could not delete account: ${error_.message}`);

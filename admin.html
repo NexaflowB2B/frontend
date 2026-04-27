@@ -69,7 +69,7 @@
 
   async function loadUsers() {
     try {
-      const users = await apiFetch(`${AUTH_URL}/auth/users`, { headers: authHeaders() }) || [];
+      const users = await apiFetch(`${AUTH_URL}/users`, { headers: authHeaders() }) || [];
       document.getElementById('userCount').textContent = `${users.length} Team Members`;
       
       const tbody = document.getElementById('userTableBody');
@@ -111,7 +111,7 @@
 
   async function toggleBlockUser(userId) {
     try {
-      const res = await fetch(`${AUTH_URL}/auth/users/${userId}/block`, {
+      const res = await fetch(`${AUTH_URL}/users/${userId}/block`, {
         method: 'PUT',
         headers: authHeaders()
       });

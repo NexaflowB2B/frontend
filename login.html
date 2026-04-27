@@ -252,7 +252,7 @@
     setLoading('#loginSection .login-btn', true);
 
     try {
-      const data = await apiFetch(`${AUTH_URL}/auth/login`, {
+      const data = await apiFetch(`${AUTH_URL}/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username, password }),
@@ -291,7 +291,7 @@
     setLoading('#signupSection .login-btn', true);
 
     try {
-      await apiFetch(`${AUTH_URL}/auth/signup`, {
+      await apiFetch(`${AUTH_URL}/signup`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username, email, password, role }),
